@@ -2,6 +2,7 @@ name: Build DEB and Release
 
 on:
   push:
+    branches: [ wip-ci ]
     tags:
       - 'v*'
   workflow_dispatch:
