@@ -99,9 +99,18 @@ jobs:
           name: deb-packages-ubuntu-22.04-arm
           path: downloaded/ubuntu-22.04-arm
 
-      - name: List downloaded files
+      - name: Prefix .deb filenames with OS directory
         run: |
-          find downloaded -type f -maxdepth 3 -print || true
+          set -e
+          find downloaded -type f -name '*.deb' -print0 | while IFS= read -r -d '' f; do
+            parent=$(basename "$(dirname "$f")")
+            dirpath=$(dirname "$f")
+            base=$(basename "$f")
+            new="$dirpath/${parent}-${base}"
+            mv "$f" "$new"
+          done
+          echo "Renamed .deb files:"
+          find downloaded -type f -name '*.deb' -print || true
 
       - name: Create release and upload .deb assets
         id: create_release
