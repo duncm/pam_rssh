@@ -20,7 +20,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-20.04, ubuntu-22.04]
+        os: [ubuntu-22.04, ubuntu-24.04, ubuntu-26.04]
     steps:
       - uses: actions/checkout@v4
         with:
@@ -30,11 +30,7 @@ jobs:
         run: |
           sudo apt-get update
           sudo DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
-            libpam0g-dev libssl-dev debhelper devscripts build-essential pkg-config \
-            ca-certificates gnupg2
-
-      - name: Build project
-        run: cargo build --release --verbose
+            libpam0g-dev libssl-dev debhelper devscripts build-essential cargo rustc pkg-config
 
       - name: Build Debian package
         run: |
@@ -67,17 +63,23 @@ jobs:
             echo "tag=${GITHUB_REF#refs/tags/}" >> "$GITHUB_OUTPUT"
           fi
 
-      - name: Download artifacts (ubuntu-20.04)
+      - name: Download artifacts (ubuntu-26.04)
         uses: actions/download-artifact@v4
         with:
-          name: deb-packages-ubuntu-20.04
-          path: downloaded/ubuntu-20.04 || true
+          name: deb-packages-ubuntu-26.04
+          path: downloaded/ubuntu-26.04
+
+      - name: Download artifacts (ubuntu-24.04)
+        uses: actions/download-artifact@v4
+        with:
+          name: deb-packages-ubuntu-24.04
+          path: downloaded/ubuntu-24.04
 
       - name: Download artifacts (ubuntu-22.04)
         uses: actions/download-artifact@v4
         with:
           name: deb-packages-ubuntu-22.04
-          path: downloaded/ubuntu-22.04 || true
+          path: downloaded/ubuntu-22.04
 
       - name: List downloaded files
         run: |
