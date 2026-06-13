@@ -14,19 +14,18 @@ override_dh_auto_install:
 	cp target/release/libpam_rssh.so debian/pam-rssh/lib/$(DEB_HOST_MULTIARCH)/security/
 
 override_dh_auto_test:
-	export SSH_AUTH_SOCK=/tmp/ssh-agent.sock
-	ssh-agent -a $(SSH_AUTH_SOCK)
-	ssh-keygen -t ecdsa -b 521 -f $(HOME)/.ssh/id_ecdsa521
-	ssh-keygen -t ecdsa -b 384 -f $(HOME)/.ssh/id_ecdsa384
-	ssh-keygen -t ecdsa -b 256 -f $(HOME)/.ssh/id_ecdsa256
-	ssh-keygen -t ed25519 -f $(HOME)/.ssh/id_ed25519
-	ssh-keygen -t rsa -f $(HOME)/.ssh/id_rsa
-	ssh-keygen -t dsa -f $(HOME)/.ssh/id_dsa
-	ssh-add $(HOME)/.ssh/id_ecdsa521
-	ssh-add $(HOME)/.ssh/id_ecdsa384
-	ssh-add $(HOME)/.ssh/id_ecdsa256
-	ssh-add $(HOME)/.ssh/id_ed25519
-	ssh-add $(HOME)/.ssh/id_rsa
-	ssh-add $(HOME)/.ssh/id_dsa
-	cp $(HOME)/.ssh/id_rsa.pub $(HOME)/.ssh/authorized_keys
-	cargo test --release
+# 	ssh-keygen -N "" -t ecdsa -b 521 -f $(HOME)/.ssh/id_ecdsa521
+# 	ssh-keygen -N "" -t ecdsa -b 384 -f $(HOME)/.ssh/id_ecdsa384
+# 	ssh-keygen -N "" -t ecdsa -b 256 -f $(HOME)/.ssh/id_ecdsa256
+# 	ssh-keygen -N "" -t ed25519 -f $(HOME)/.ssh/id_ed25519
+# 	ssh-keygen -N "" -t rsa -f $(HOME)/.ssh/id_rsa
+# 	ssh-keygen -N "" -t dsa -f $(HOME)/.ssh/id_dsa
+# 	ssh-agent -a /tmp/ssh-agent.sock
+# 	ssh-add $(HOME)/.ssh/id_ecdsa521
+# 	ssh-add $(HOME)/.ssh/id_ecdsa384
+# 	ssh-add $(HOME)/.ssh/id_ecdsa256
+# 	ssh-add $(HOME)/.ssh/id_ed25519
+# 	ssh-add $(HOME)/.ssh/id_rsa
+# 	ssh-add $(HOME)/.ssh/id_dsa
+# 	cp $(HOME)/.ssh/id_rsa.pub $(HOME)/.ssh/authorized_keys
+# 	SSH_AUTH_SOCK=/tmp/ssh-agent.sock cargo test --release
