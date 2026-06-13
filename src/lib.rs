@@ -265,7 +265,8 @@ mod tests {
     fn sshagent_list_identities() {
         init_log();
         enable_debug_log();
-        let mut agent = AgentClient::new(env!("SSH_AUTH_SOCK"));
+        let sock = std::env::var("SSH_AUTH_SOCK").unwrap();
+        let mut agent = AgentClient::new(&sock);
         let result = agent.list_identities();
         debug!("result={:?}", result);
         assert!(result.is_ok());
@@ -280,7 +281,8 @@ mod tests {
     fn sshagent_auth() {
         init_log();
         enable_debug_log();
-        let mut agent = AgentClient::new(env!("SSH_AUTH_SOCK"));
+        let sock = std::env::var("SSH_AUTH_SOCK").unwrap();
+        let mut agent = AgentClient::new(&sock);
         let result = agent.list_identities();
         debug!("result={:?}", result);
         assert!(result.is_ok());
@@ -302,7 +304,8 @@ mod tests {
     #[test]
     fn sshagent_more_auth() {
         init_log();
-        let mut agent = AgentClient::new(env!("SSH_AUTH_SOCK"));
+        let sock = std::env::var("SSH_AUTH_SOCK").unwrap();
+        let mut agent = AgentClient::new(&sock);
         let result = agent.list_identities();
         assert!(result.is_ok());
         let keys = result.unwrap();
@@ -319,7 +322,7 @@ mod tests {
     fn parse_user_authorized_keys() {
         init_log();
         enable_debug_log();
-        let username = env!("USER");
+        let username = std::env::var("USER").unwrap();
         let result = super::auth_keys::parse_user_authorized_keys(&username);
         assert!(result.is_ok());
         let keys = result.unwrap();
