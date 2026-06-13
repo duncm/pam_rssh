@@ -43,6 +43,8 @@ jobs:
         cp $HOME/.ssh/id_rsa.pub $HOME/.ssh/authorized_keys
         
         cargo test --verbose
+        killall ssh-agent
+        
     - name: Build Debian Package
       run: dpkg-buildpackage -us -uc -b
     - name: Collect DEB artifacts
