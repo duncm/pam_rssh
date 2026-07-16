@@ -6,6 +6,11 @@ DEB_HOST_MULTIARCH ?= $(shell dpkg-architecture -qDEB_HOST_MULTIARCH)
 %:
 	dh $@
 
+# The rust toolchain emits debug info that older dwz (e.g. Debian buster)
+# cannot process, making dh_dwz fail. dwz is only a debug-info optimisation,
+# so skip it; stripping still happens via dh_strip.
+override_dh_dwz:
+
 override_dh_auto_build:
 	cargo build --release
 
