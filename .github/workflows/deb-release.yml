@@ -186,16 +186,21 @@ jobs:
           set -e
           # The crate's pinned dependencies require a newer rustc than the
           # distro packages provide. Install a current toolchain under a fixed
-          # location and put it ahead of anything else on PATH.
+          # location; the build step below puts it on PATH.
           curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs \
             | sh -s -- -y --profile minimal --default-toolchain stable
-          echo "/usr/local/cargo/bin" >> "$GITHUB_PATH"
-          echo "CARGO_HOME=/usr/local/cargo" >> "$GITHUB_ENV"
-          echo "RUSTUP_HOME=/usr/local/rustup" >> "$GITHUB_ENV"
 
       - name: Build RPM package
+        env:
+          CARGO_HOME: /usr/local/cargo
+          RUSTUP_HOME: /usr/local/rustup
         run: |
           set -e
+          # Prepend cargo to PATH here rather than via $GITHUB_PATH: some
+          # container images (e.g. rockylinux/rockylinux:10) do not declare
+          # PATH in their config, and appending to $GITHUB_PATH then leaves the
+          # next step with a PATH that drops /usr/bin, breaking even sh.
+          export PATH="/usr/local/cargo/bin:$PATH"
           version=$(rpmspec -q --srpm --qf '%{version}\n' rpm/pam_rssh.spec)
           mkdir -p ~/rpmbuild/{SOURCES,SPECS,BUILD,BUILDROOT,RPMS,SRPMS}
           # rpmbuild expects a versioned source tarball; build one from the
