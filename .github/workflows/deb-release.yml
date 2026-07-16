@@ -142,7 +142,9 @@ jobs:
         target:
           - { id: fedora, image: 'fedora:latest' }
           - { id: rocky9, image: 'rockylinux:9' }
-          - { id: rocky10, image: 'rockylinux:10' }
+          # Rocky 10 is not published as a Docker Official Image (that line
+          # ended at 9); it lives under the project's own namespace.
+          - { id: rocky10, image: 'rockylinux/rockylinux:10' }
           - { id: amazonlinux2023, image: 'amazonlinux:2023' }
         runner: [ubuntu-latest, ubuntu-24.04-arm]
     steps:
@@ -169,9 +171,12 @@ jobs:
 
       - name: Install build packages
         run: |
+          # Do not install "curl": these images ship curl-minimal, which
+          # already provides the curl binary, and pulling full curl conflicts
+          # with it on dnf4 (Rocky, Amazon Linux).
           dnf install -y \
             pam-devel openssl-devel gcc make pkgconfig \
-            rpm-build tar findutils curl ca-certificates
+            rpm-build tar findutils ca-certificates
 
       - name: Install current Rust toolchain
         env:
